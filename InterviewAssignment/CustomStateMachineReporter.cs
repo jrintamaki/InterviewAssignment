@@ -36,13 +36,28 @@ namespace InterviewAssignment
 
         public string StateToString(TState state, string separator = ".")
         {
+            string stringState = state.ToString(); // Converts state to string
+            switch (stringState) //switch case
+            {
+                case "Initializing": //Substates of "Down"
+                case "Error":
+                case "NotInitialized":
+                    return "Down" + separator + stringState;
 
-            //Your assignment is here!
-            //Tip: You find state machine hierarchy on States property (or myStates field). 
-            //You should go through the states and print that on what hierarchy path the current state
-            //is found. So if state is Initializing this method should return "Down.Initializing" because
-            //"Initializing" is substate of "Down".
-            throw new NotImplementedException();
+                case "PoweringOff":     //Substates of "Idle"
+                case "PoweringOn":      //"Idle" is substate of "Ready"
+                case "PowerOn":
+                case "PowerOff":
+                    return "Ready" + separator + "Idle" + separator + stringState;
+
+                case "AxesIdle":    //Substates of "Processing
+                case "AxesMoving":  //"Processing" is substate of "Ready"
+                    return "Ready" + separator + "Processing" + separator + stringState;
+
+                default:
+                    return "Down.Error";    //Returns Error state if undefined state is met
+            }
         }
     }
 }
+
