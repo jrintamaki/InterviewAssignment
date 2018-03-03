@@ -36,28 +36,31 @@ namespace InterviewAssignment
 
         public string StateToString(TState state, string separator = ".")
         {
-            string stringState = state.ToString(); // Converts state to string
-            switch (stringState) //switch case
+            string result = "";
+            List<string> ssList = new List<string>();
+
+            var enumerator = myStates.GetEnumerator();
+
+            while (enumerator.MoveNext())
             {
-                case "Initializing": //Substates of "Down"
-                case "Error":
-                case "NotInitialized":
-                    return "Down" + separator + stringState;
+                if (enumerator.Current.ToString() == state.ToString())
+                {
+                    var cState = enumerator.Current;
 
-                case "PoweringOff":     //Substates of "Idle"
-                case "PoweringOn":      //"Idle" is substate of "Ready"
-                case "PowerOn":
-                case "PowerOff":
-                    return "Ready" + separator + "Idle" + separator + stringState;
+                    while (cState.SuperState != null)
+                    {
+                        cState = cState.SuperState;
+                        ssList.Insert(0, cState.ToString());
+                    }
 
-                case "AxesIdle":    //Substates of "Processing
-                case "AxesMoving":  //"Processing" is substate of "Ready"
-                    return "Ready" + separator + "Processing" + separator + stringState;
-
-                default:
-                    return "Down.Error";    //Returns Error state if undefined state is met
+                    foreach (var ss in ssList)
+                    {
+                        result += ss + separator;
+                    }
+                }
             }
+
+            return result + state.ToString();
         }
     }
 }
-
